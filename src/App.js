@@ -1,36 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import SnackbarNotification from "./components/snackbarNotification/SnackbarNotification";
-import Login from './pages/Login'
-import { Redirect } from 'react-router'
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
-import { AuthContext } from "./context/auth";
+import React from 'react'
+import SnackbarNotification from "./UI/snackbarNotification/SnackbarNotification";
+import { BrowserRouter as Router } from "react-router-dom";
 import './App.css';
-import Signup from "./pages/Signup";
+import Routes from "./Routes";
 
 function App() {
-  const [authTokens, setAuthTokens] = useState();
-
-  const setTokens = (data) => {
-    localStorage.setItem("token", JSON.stringify(data));
-    setAuthTokens(data);
-  };
-
-  useEffect(() => {
-    localStorage.getItem("token") ? setAuthTokens(localStorage.getItem("token")) : setAuthTokens(null);
-  },[authTokens]);
+  const routes = Routes();
 
   return (
-    <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
-      <SnackbarNotification />
       <Router>
-        <div>
-          {/*{!authTokens ? <Redirect to="/" /> : null }*/}
-          <Route path="/" exact component={Login} />
-          <Route path="/signup" component={Signup} />
-        </div>
+        {routes}
+        <SnackbarNotification />
       </Router>
-    </AuthContext.Provider>
-
   );
 }
 

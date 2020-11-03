@@ -1,19 +1,19 @@
-import axios from "axios";
-import React, {useState} from 'react';
+import { useDispatch } from "react-redux";
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {useAuth} from "../context/auth";
+import {register} from "../actions/auth";
 import { Link as RouterLink } from 'react-router-dom';
+import * as Yup from 'yup'
+import { Formik } from 'formik';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,32 +37,28 @@ const useStyles = makeStyles((theme) => ({
 
 const Signup = props => {
 
+  const formInitValues = {
+    companyName: '',
+    email: '',
+    password: '',
+    repeatPassword: '',
+  };
+
   const classes = useStyles();
-  const [isError, setIsError] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const { setAuthTokens } = useAuth();
+  const dispatch = useDispatch();
 
-  const signUp = async event => {
-    event.preventDefault();
-    try {
-      const response = await axios.post(`/session/signUp`, {
-        email,
-        password,
-        repeatPassword,
-        companyName,
-      });
+  const signUpSchema = Yup.object().shape({
+    companyName: Yup.string().required("Company name is required"),
+    email: Yup.string().email().required("Email is required"),
+    password: Yup.string().required("Password is required"),
+    repeatPassword: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Password confirm is required'),
+  });
 
-      if (response.status === 200) {
-        setAuthTokens(response.data);
-      } else {
-        setIsError(true);
-      }
-    } catch (error) {
-      setIsError(true);
-    }
+
+  const signUp = async values => {
+      dispatch(register(values));
   };
 
   return (
@@ -75,95 +71,112 @@ const Signup = props => {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="companyName"
-            label="Company Name"
-            type="text"
-            id="companyName"
-            autoComplete="company-name"
-            value={companyName}
-            onChange={e => {
-              setCompanyName(e.target.value);
-            }}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={e => {
-              setEmail(e.target.value);
-            }}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={e => {
-              setPassword(e.target.value);
-            }}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="repeatPassword"
-            label="repeatPassword"
-            type="password"
-            id="repeatPassword"
-            autoComplete="repeat-password"
-            value={repeatPassword}
-            onChange={e => {
-              setRepeatPassword(e.target.value);
-            }}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={signUp}
-          >
-            Sign Up
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link component={RouterLink} to='/' variant="body2">
-                Already have an account? Sign In
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-        { isError ? <span>The username or password provided were incorrect!</span> : null}
+        <Formik initialValues={formInitValues}
+                validationSchema={signUpSchema}
+                onSubmit={signUp} >
+          {(props) => {
+            const {
+              values,
+              touched,
+              errors,
+              isValid,
+              isSubmitting,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+            } = props;
+            return (
+              <form className={classes.form} onSubmit={handleSubmit}>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="companyName"
+                  label="Company Name"
+                  type="text"
+                  id="companyName"
+                  autoComplete="company-name"
+                  error={errors.companyName && touched.companyName}
+                  value={values.companyName}
+                  onBlur={handleBlur}
+                  helperText={(errors.companyName && touched.companyName) && errors.companyName}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  error={errors.email && touched.email}
+                  value={values.email}
+                  onBlur={handleBlur}
+                  helperText={(errors.email && touched.email) && errors.email}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  error={errors.password && touched.password}
+                  value={values.password}
+                  onBlur={handleBlur}
+                  helperText={(errors.password && touched.password) && errors.password}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="repeatPassword"
+                  label="repeatPassword"
+                  type="password"
+                  id="repeatPassword"
+                  autoComplete="repeat-password"
+                  error={errors.repeatPassword && touched.repeatPassword}
+                  value={values.repeatPassword}
+                  onBlur={handleBlur}
+                  helperText={(errors.repeatPassword && touched.repeatPassword) && errors.repeatPassword}
+                  onChange={handleChange}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  disabled={!isValid || isSubmitting}
+                >
+                  Sign Up
+                </Button>
+                <Grid container>
+                  <Grid item xs>
+                    <Link href="#" variant="body2">
+                      Forgot password?
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link component={RouterLink} to='/' variant="body2">
+                      Already have an account? Sign In
+                    </Link>
+                  </Grid>
+                </Grid>
+              </form>
+            )
+          }}
+        </Formik>
       </div>
     </Container>
   );
