@@ -1,15 +1,23 @@
 import React from 'react'
+import Dashboard from "./pages/dashboard/Dashboard";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
 import SnackbarNotification from "./UI/snackbarNotification/SnackbarNotification";
-import { BrowserRouter as Router } from "react-router-dom";
+import {BrowserRouter as Router, Switch, Redirect} from "react-router-dom";
 import './App.css';
-import Routes from "./Routes";
 
 function App() {
-  const routes = Routes();
 
   return (
       <Router>
-        {routes}
+        <Switch>
+          <PublicRoute path={["/", "/login"]} exact component={Login} />
+          <PublicRoute path="/signup" component={Signup} />
+          <PrivateRoute path="/dashboard" component={Dashboard} />
+          <Redirect to='/' />
+        </Switch>
         <SnackbarNotification />
       </Router>
   );
