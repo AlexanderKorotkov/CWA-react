@@ -1,11 +1,11 @@
 import React from 'react';
 import {Switch, useLocation, Redirect} from "react-router-dom";
-import Nav from "../../components/Nav";
+import Nav from "../../components/Nav/Nav";
 import PrivateRoute from "../../PrivateRoute";
 import Settings from "./Settings";
 import Workers from "./Workers";
 
-const Dashboard = props => {
+const Dashboard = () => {
   const location = useLocation();
   return (
     <div>

@@ -6,3 +6,9 @@ export const LOGOUT = "LOGOUT";
 
 export const SET_MESSAGE = "SET_MESSAGE";
 export const CLEAR_MESSAGE = "CLEAR_MESSAGE";
+
+export const SHOW_SPINNER = "SHOW_SPINNER";
+export const HIDE_SPINNER = "HIDE_SPINNER";
+
+export const SET_WORKERS = "SET_WORKERS";
+export const REMOVE_WORKER = "REMOVE_WORKER";

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Signup = props => {
+const Signup = () => {
 
   const formInitValues = {
     companyName: '',
@@ -180,10 +180,6 @@ const Signup = props => {
       </div>
     </Container>
   );
-};
-
-Signup.propTypes = {
-
 };
 
 export default Signup;

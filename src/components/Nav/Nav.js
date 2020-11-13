@@ -5,7 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
-import {logout} from "../actions/auth";
+import {logout} from "../../actions/auth";
 import ExitIcon from '@material-ui/icons/PowerSettingsNew';
 
 const useStyles = makeStyles({
