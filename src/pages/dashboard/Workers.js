@@ -1,5 +1,5 @@
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import React, { useState, useEffect } from 'react';
+import {useHistory} from "react-router-dom";
 import {getWorkers} from "../../actions/workers";
 import WorkerList from "../../components/WorkerList/WorkerList";
 import {useSelector, useDispatch} from 'react-redux'
@@ -27,6 +27,12 @@ const Workers = () => {
     console.log('removed');
   };
 
+  const history = useHistory();
+  const goToDetailHandler = (worker) => {
+    const path = `/dashboard/workers/${worker._id}`;
+    history.push(path);
+  };
+
   return (
     <div>
       {spinner
@@ -34,6 +40,7 @@ const Workers = () => {
         : <WorkerList
             workers={workers}
             onRemoveWorker={removeWorkerHandler}
+            onGoToDetailPage={goToDetailHandler}
           />
       }
     </div>

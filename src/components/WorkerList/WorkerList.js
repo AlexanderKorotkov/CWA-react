@@ -26,7 +26,7 @@ const WorkerList = (props) => {
   return (
     <List className={classes.root}>
       {props.workers.map(worker =>
-        <WorkerItem key={worker._id} worker={worker} onRemoveWorker={props.onRemoveWorker}/>
+        <WorkerItem key={worker._id} worker={worker} onRemoveWorker={props.onRemoveWorker} onGoToDetailPage={props.onGoToDetailPage}/>
       )}
     </List>
   );
@@ -54,6 +54,7 @@ WorkerList.propTypes = {
     }).isRequired,
   ),
   onRemoveWorker: PropTypes.func.isRequired,
+  onGoToDetailPage: PropTypes.func.isRequired,
 };
 
 export default WorkerList;

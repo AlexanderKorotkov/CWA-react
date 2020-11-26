@@ -11,7 +11,6 @@ const workers = (state = initialState, action) => {
         ...state,
         list: payload
       };
-
     case REMOVE_WORKER:
       return {
         ...state,

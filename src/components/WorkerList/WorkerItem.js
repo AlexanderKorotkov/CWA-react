@@ -32,9 +32,13 @@ const WorkerItem = props => {
   const user = useSelector(state => state.auth.userData.user);
   const workerFullName = `${props.worker.name} ${props.worker.surname}`;
 
+  const goToDetailPageHandler = () => {
+    props.onGoToDetailPage(props.worker)
+  };
+
   return (
       <ListItem>
-        <Link underline='none' className={classes.link}>
+        <Link underline='none' className={classes.link} onDoubleClick={goToDetailPageHandler}>
           <ListItemAvatar>
             <Avatar className={classes.mt5} alt={props.worker.name} src={props.worker.avatar ? props.worker.avatar.imageThumbUrl : null}/>
           </ListItemAvatar>
